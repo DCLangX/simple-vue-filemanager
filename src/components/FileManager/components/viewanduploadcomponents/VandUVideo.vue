@@ -1,8 +1,8 @@
 <template>
   <div class="h-100 video">
     <div v-if="info.mode === 'view'" class="h-100 view">
-      <video class="w-100 h-100" controls :key="info.detail.file_url">
-        <source :src="info.detail.file_url" />
+      <video class="w-100 h-100" controls :key="info.detail.file">
+        <source :src="info.detail.file" />
       </video>
     </div>
     <div v-else class="h-100 upload">
@@ -51,7 +51,7 @@ export default {
       const data = {
         file: file.file,
         name: file.file.name,
-        is_share: this.isShare,
+        isShare: this.isShare,
       };
       // console.log(data, "结果");
       this.upload(data, file.onProgress).then(() => {

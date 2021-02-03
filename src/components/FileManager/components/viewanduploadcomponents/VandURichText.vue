@@ -48,7 +48,7 @@ export default {
     info(newValue) {
       this.html = (newValue && newValue.detail && newValue.detail.content) || '';
       if (newValue.mode === 'edit') {
-        this.isShare = (newValue && newValue.detail && newValue.detail.is_share) || false;
+        this.isShare = (newValue && newValue.detail && newValue.detail.isShare) || false;
         this.name = newValue.detail.name;
       }
     },
@@ -61,18 +61,18 @@ export default {
     handleSubmit() {
       let data;
       if (this.info.mode === 'edit') {
-        data = { ...this.info.detail, file: this.html, is_share: this.isShare };
+        data = { ...this.info.detail, file: this.html, isShare: this.isShare };
       } else {
         // 新建时下，获取文件名前四位并提交
         if (this.name !== '') {
-          data = { file: this.html, name: this.name, is_share: this.isShare };
+          data = { file: this.html, name: this.name, isShare: this.isShare };
         } else {
           const oDiv = document.createElement('div');
           oDiv.innerHTML = this.html;
           data = {
             file: this.html,
             name: oDiv.textContent.slice(0, 4),
-            is_share: this.isShare,
+            isShare: this.isShare,
           };
         }
       }

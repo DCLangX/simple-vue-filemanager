@@ -3,7 +3,6 @@
 
 //layout
 @import 'reboot';
-@import 'animation';
 
 @each $colorKey, $color in $theme-colors {
   .bg-#{$colorKey} {

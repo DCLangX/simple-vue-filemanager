@@ -2,9 +2,9 @@
   <div class="h-100 d-flex flex-column preview">
     <div class="fs-21 file-name" v-if="info.mode === 'view'">
       {{ info.detail.name }}
-      <el-button class="share-btn" icon="el-icon-share" @click="onShare" v-if="!disableEdit">{{
-        info.detail.is_share ? '已分享' : '分享'
-      }}</el-button>
+      <!-- <el-button class="share-btn" icon="el-icon-share" @click="onShare" v-if="!disableEdit">{{
+        info.detail.isShare ? '已分享' : '分享'
+      }}</el-button> -->
     </div>
     <div class="flex-1 main">
       <VandURichText
@@ -34,7 +34,6 @@ export default {
     info: Object,
     edit: Function,
     upload: Function,
-    share: Function,
     disableEdit: {
       // 禁用编辑和新增，隐藏新增编辑按钮
       type: Boolean,
@@ -45,29 +44,24 @@ export default {
     return {};
   },
   computed: {},
-  methods: {
-    onShare() {
-      this.share(this.info.detail);
-    },
-  },
+  methods: {},
 };
 </script>
 
 <style scoped lang="scss">
 .preview {
   .file-name {
-    position: relative;
-    padding: 0 150px 0 50px;
+    padding: 0 50px;
     line-height: 49px;
     min-height: 50px;
     background-color: #f5f5f5;
     border-bottom: 1px solid #ebeef5;
     box-shadow: 0px 2px 6px -4px rgba(0, 0, 0, 0.2);
-    .share-btn {
-      position: absolute;
-      right: 10px;
-      top: 3px;
-    }
+    // .share-btn {
+    //   position: absolute;
+    //   right: 10px;
+    //   top: 3px;
+    // }
   }
   .main {
     min-height: 0;

@@ -10,9 +10,10 @@
           @click="handleAdd"
         ></el-button>
       </el-tooltip>
-      <!-- <el-tooltip
+      <el-tooltip
         class="item"
         effect="dark"
+        v-if="!disableEdit"
         content="删除文件"
         placement="bottom"
       >
@@ -20,9 +21,25 @@
           icon="el-icon-delete"
           size="mini"
           circle
+          :disabled="!activeAddBtn || !selectFileInfo"
           @click="handleDeleFile"
         ></el-button>
-      </el-tooltip> -->
+      </el-tooltip>
+      <el-tooltip
+        class="item"
+        effect="dark"
+        v-if="!disableEdit"
+        content="分享文件"
+        placement="bottom"
+      >
+        <el-button
+          icon="el-icon-share"
+          size="mini"
+          circle
+          :disabled="!activeAddBtn || !selectFileInfo"
+          @click="handleShare"
+        ></el-button>
+      </el-tooltip>
     </div>
     <el-menu
       class="w-100 h-100 menu-vertical"
@@ -37,7 +54,7 @@
         class="text-nowrap"
       >
         <el-tooltip class="share-icon" effect="dark" content="文件已分享" placement="top">
-          <i class="el-icon-share" v-if="item.is_share" />
+          <i class="el-icon-share" v-if="item.isShare" />
         </el-tooltip>
         <span>{{ item.name }}</span>
       </el-menu-item>
@@ -73,22 +90,31 @@ export default {
   computed: {},
   data() {
     return {
-      selectFileInfo: {},
+      selectFileInfo: null,
     };
+  },
+  watch: {
+    fileList() {
+      this.selectFileInfo = null;
+    },
   },
   methods: {
     handleSelect(index) {
       const fileInfo = this.fileList[index];
+      this.selectFileInfo = fileInfo;
       this.$emit('select', fileInfo);
     },
     handleClose(key, keyPath) {
       console.log(key, keyPath);
     },
     handleDeleFile() {
-      this.$emit('delete', this.fileInfo);
+      this.$emit('delete', this.selectFileInfo);
     },
     handleAdd() {
       this.$emit('add');
+    },
+    handleShare() {
+      this.$emit('share', this.selectFileInfo);
     },
   },
 };

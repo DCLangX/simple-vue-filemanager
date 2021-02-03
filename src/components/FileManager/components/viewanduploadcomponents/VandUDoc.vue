@@ -1,15 +1,9 @@
 <template>
   <div class="h-100 doc">
     <div v-if="info.mode === 'view'" class="h-100 view">
-      <!-- <el-image
-        class="w-100 h-100"
-        :src="info.detail.file_url"
-        :key="info.detail.file_url"
-        fit="contain"
-      ></el-image> -->
       <embed
-        :src="info.detail.file_url + '#toolbar=0'"
-        :key="info.detail.file_url"
+        :src="info.detail.file"
+        :key="info.detail.file"
         type="application/pdf"
         width="100%"
         height="100%"
@@ -62,7 +56,7 @@ export default {
       const data = {
         file: file.file,
         name: file.file.name,
-        is_share: this.isShare,
+        isShare: this.isShare,
       };
       // console.log(data, "结果");
       this.upload(data, file.onProgress).then(() => {

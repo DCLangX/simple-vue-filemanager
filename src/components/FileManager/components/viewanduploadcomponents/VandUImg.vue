@@ -3,8 +3,8 @@
     <div v-if="info.mode === 'view'" class="h-100 view">
       <el-image
         class="w-100 h-100"
-        :src="info.detail.file_url"
-        :key="info.detail.file_url"
+        :src="info.detail.file"
+        :key="info.detail.file"
         fit="contain"
       ></el-image>
     </div>
@@ -54,7 +54,7 @@ export default {
       const data = {
         file: file.file,
         name: file.file.name,
-        is_share: this.isShare,
+        isShare: this.isShare,
       };
       // console.log(data, "结果");
       this.upload(data, file.onProgress).then(() => {

@@ -3,6 +3,7 @@
     <div class="left">
       <Tree :folderList="treeList" @select="onSelectFileType" :collapse="treeCollapse"></Tree>
     </div>
+
     <div class="middle">
       <FileList
         :fileList="fileList"
@@ -12,6 +13,7 @@
         @add="onNewFile"
         @select="onSelectFile"
         @delete="onDeleteFile"
+        @share="onShare"
       ></FileList>
     </div>
     <div class="right">
@@ -19,7 +21,6 @@
         :info="rightPanelInfo"
         :edit="onEditRichText"
         :upload="onUpload"
-        :share="onShare"
         :disableEdit="disableEdit"
       ></Preview>
     </div>
@@ -45,20 +46,11 @@ export default {
   props: {
     id: Number,
     disableEdit: {
-      // 禁用编辑和新增，隐藏新增编辑按钮
+      // 禁用编辑和新增，隐藏新增编辑按钮，此状态用于仅预览的需求
       type: Boolean,
       default: false,
     },
-    nameType: String,
   },
-  // watch: {
-  //   id(newValue) {
-  //     if (newValue) {
-  //       const { data } = apiGetFileFolder(newValue);
-  //       console.log(data, "文件夹数据");
-  //     }
-  //   }
-  // },
   components: { Tree, FileList, Preview },
   computed: {},
   data() {
@@ -67,6 +59,8 @@ export default {
       // 是否隐藏左侧导航树
       treeList: [
         { type: 0, name: '文字', count: 0 },
+        { type: 1, name: '文档', count: 0 },
+        { type: 2, name: '图片', count: 0 },
         { type: 3, name: '视频', count: 0 },
       ],
       // 左侧导航树列表
@@ -74,7 +68,7 @@ export default {
       fileList: [],
       // 中间文件列表
       rightPanelInfo: {
-        // 右侧面板数据，有text等一堆组件类型，有view，edit，new三种模式，edit为富文本组件独有
+        // 右侧面板数据，类型有text，img，video，doc等一堆组件类型，模式有view，edit，new三种模式，edit为富文本组件独有
         // type: "text",
         // mode: "view",
         // mode: "new",
@@ -96,28 +90,63 @@ export default {
   },
   methods: {
     async fetchFolder() {
-      // const { data } = await apiGetFileFolder(this.id);
+      // 初次加载，需要获取文件夹数据
       // console.log(data, "文件夹数据");
       // this.treeList = data;
     },
     onSelectFile(fileInfo) {
       this.treeCollapse = true;
-      // console.log(fileInfo, "选中文件信息");
+      console.log(fileInfo, '选中文件信息');
       this.rightPanelInfo = {
         type: this.allType[this.activeTreeId],
         mode: 'view',
         detail: fileInfo,
       };
     },
-    onDeleteFile() {},
-    async onSelectFileType(typeId) {
-      this.activeTreeId = typeId;
+    onDeleteFile(fileInfo) {
+      // 删除文件
+    },
+    async onSelectFileType(treeId) {
+      // 获取文件夹中的文件
+      this.activeTreeId = treeId;
+      console.log(treeId, '文件夹id');
       this.treeCollapse = false;
       this.loadingFile = true;
-      const getFunc = this.getFun[this.nameType];
-      const { data } = await getFunc(this.id, { folder_type: typeId });
-      this.loadingFile = false;
-      this.fileList = data;
+      setTimeout(() => {
+        this.loadingFile = false;
+        const mockFileList = {
+          0: {
+            id: 1,
+            type: 'richtext',
+            name: '111',
+            isShare: true,
+            content: '<h2><b id="jxfpc">呱呱呱呱呱呱呱呱呱呱呱呱呱呱呱古古怪怪</b></h2>',
+          },
+          1: {
+            id: 1,
+            type: 'pdf',
+            name: '222',
+            isShare: true,
+            file:
+              'https://www-file.huawei.com/-/media/corporate/pdf/annual-report/annual_report_2019_cn.pdf?la=zh',
+          },
+          2: {
+            id: 1,
+            type: 'img',
+            name: '333',
+            isShare: true,
+            file: 'https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg',
+          },
+          3: {
+            id: 1,
+            type: 'mp4',
+            name: '444',
+            isShare: true,
+            file: 'http://static.biligame.com/deadcells/gw/pc/images/video-2.mp4',
+          },
+        };
+        this.fileList = [mockFileList[treeId]];
+      }, 1000);
     },
     onEditRichText(detail) {
       this.rightPanelInfo = {
@@ -133,8 +162,10 @@ export default {
         detail: {},
       };
     },
-    onShare(data) {
-      const isShare = data.is_share;
+    onShare(fileInfo) {
+      // 分享文件
+      console.log(fileInfo, '分享文件');
+      const { isShare } = fileInfo;
       if (isShare) {
         this.$notify({
           title: '操作执行中',
@@ -150,24 +181,25 @@ export default {
           duration: 0,
         });
       }
-      // apiPostShare(this.id, { material_id: data.id, is_share: !isShare }).then(() => {
-      //   this.$notify.closeAll();
-      //   this.$notify({
-      //     title: '成功',
-      //     message: '操作成功',
-      //     type: 'success',
-      //   });
-      //   this.onSelectFileType(this.activeTreeId);
-      //   this.$set(this.rightPanelInfo.detail, 'is_share', !isShare);
-      // });
+      setTimeout(() => {
+        this.$notify.closeAll();
+        this.$notify({
+          title: '成功',
+          message: '操作成功',
+          type: 'success',
+        });
+        this.onSelectFileType(this.activeTreeId);
+        this.$set(this.rightPanelInfo.detail, 'isShare', !isShare);
+      }, 1000);
     },
     upLoadFile(...rest) {
-      // this.$notify({
-      //   title: '警告',
-      //   message: '文件正在提交，请不要关闭页面',
-      //   type: 'warning',
-      //   duration: 0,
-      // });
+      this.$notify({
+        title: '警告',
+        message: '文件正在提交，请不要关闭页面',
+        type: 'warning',
+        duration: 0,
+      });
+      // 此处请务必返回一个promise，以便组件判断，例如下
       // return apiUploadFile(...rest)
       //   .then(() => {
       //     this.onSelectFileType(this.activeTreeId);
@@ -194,9 +226,7 @@ export default {
         activity_id: this.id,
         folder_type: this.activeTreeId,
       };
-      // console.log("进行同名检测");
-      // const isRepeat = await this.checkName(data.name, ...rest);
-      // console.log(isRepeat, "查看同名检测");
+      // 如果是新建模式，会执行一次文件重名检测，编辑模式不会
       if (
         this.rightPanelInfo.mode !== 'edit' &&
         data.name !== undefined &&
