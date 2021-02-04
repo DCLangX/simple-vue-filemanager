@@ -1,7 +1,7 @@
 # Filemanager
 ### 项目中要做一个简单文件管理器，用的是vue.js和elementui，结果找了一圈没找着，只能撸了个简陋版
 
-![](https://pandao.github.io/editor.md/images/logos/editormd-logo-180x180.png)
+![](https://raw.githubusercontent.com/DCLangX/simple-vue-filemanager/main/preview.gif)
 
 - 左-中-右，三个组件
 - 支持富文本、图片、pdf、图片、视频查看及上传；
